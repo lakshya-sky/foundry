@@ -873,10 +873,13 @@ impl NodeConfig {
             cfg.memory_limit = value;
         }
 
+        let gas_limit =
+            if self.disable_block_gas_limit { u64::MAX as u128 } else { self.gas_limit };
+
         let env = revm::primitives::Env {
             cfg: cfg.cfg_env,
             block: BlockEnv {
-                gas_limit: U256::from(self.gas_limit),
+                gas_limit: U256::from(gas_limit),
                 basefee: U256::from(self.get_base_fee()),
                 ..Default::default()
             },
